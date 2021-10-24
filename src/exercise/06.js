@@ -6,6 +6,36 @@ import {
   PokemonDataView,
 } from '../pokemon'
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      Error: '',
+    }
+  }
+
+  static getDerivedStateFromError(error) {
+    return {Error: error}
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.log('error is: ', error)
+  }
+
+  render() {
+    if (this.state.Error) {
+      return (
+        <div role="alert">
+          There was an error:{' '}
+          <pre style={{whiteSpace: 'normal'}}>{this.state.Error.message}</pre>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
+
 function PokemonInfo({pokemonName}) {
   const [state, setState] = React.useState({
     status: 'idle',
@@ -48,12 +78,7 @@ function PokemonInfo({pokemonName}) {
   }
 
   if (status === 'rejected') {
-    return (
-      <div role="alert">
-        There was an error:{' '}
-        <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
-      </div>
-    )
+    throw new Error('api was rejected')
   }
 }
 
@@ -69,7 +94,9 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonInfo pokemonName={pokemonName} />
+        <ErrorBoundary>
+          <PokemonInfo pokemonName={pokemonName} />
+        </ErrorBoundary>
       </div>
     </div>
   )
