@@ -22,6 +22,12 @@ class ErrorBoundary extends React.Component {
     console.log('error is: ', error)
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.pokemonName !== this.props.pokemonName) {
+      this.setState({Error: ''})
+    }
+  }
+
   render() {
     if (this.state.Error) {
       return (
@@ -94,7 +100,7 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary>
+        <ErrorBoundary pokemonName={pokemonName}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
