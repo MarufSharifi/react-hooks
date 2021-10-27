@@ -47,6 +47,13 @@ const ErrorFallback = ({error, resetErrorBoundary}) => {
   return (
     <div role="alert">
       There was an error: <pre style={{whiteSpace: 'normal'}}>{error[0]}</pre>
+      <button
+        onClick={() => {
+          resetErrorBoundary()
+        }}
+      >
+        Try again
+      </button>
     </div>
   )
 }
@@ -109,7 +116,12 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <ErrorBoundary
+          onReset={() => {
+            setPokemonName('')
+          }}
+          FallbackComponent={ErrorFallback}
+        >
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
