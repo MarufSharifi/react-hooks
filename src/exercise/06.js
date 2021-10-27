@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {ErrorBoundary} from 'react-error-boundary'
 import {
   fetchPokemon,
   PokemonForm,
@@ -6,40 +7,48 @@ import {
   PokemonDataView,
 } from '../pokemon'
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      Error: '',
-    }
-  }
+// class ErrorBoundary extends React.Component {
+//   constructor(props) {
+//     super(props)
+//     this.state = {
+//       Error: '',
+//     }
+//   }
 
-  static getDerivedStateFromError(error) {
-    return {Error: error}
-  }
+//   static getDerivedStateFromError(error) {
+//     return {Error: error}
+//   }
 
-  componentDidCatch(error, errorInfo) {
-    console.log('error is: ', error)
-  }
+//   componentDidCatch(error, errorInfo) {
+//     console.log('error is: ', error)
+//   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.pokemonName !== this.props.pokemonName) {
-      this.setState({Error: ''})
-    }
-  }
+//   componentDidUpdate(prevProps, prevState) {
+//     if (prevProps.pokemonName !== this.props.pokemonName) {
+//       this.setState({Error: ''})
+//     }
+//   }
 
-  render() {
-    if (this.state.Error) {
-      return (
-        <div role="alert">
-          There was an error:{' '}
-          <pre style={{whiteSpace: 'normal'}}>{this.state.Error.message}</pre>
-        </div>
-      )
-    }
+//   render() {
+//     if (this.state.Error) {
+//       return (
+//         <div role="alert">
+//           There was an error:{' '}
+//           <pre style={{whiteSpace: 'normal'}}>{this.state.Error.message}</pre>
+//         </div>
+//       )
+//     }
 
-    return this.props.children
-  }
+//     return this.props.children
+//   }
+// }
+
+const ErrorFallback = ({error, resetErrorBoundary}) => {
+  return (
+    <div role="alert">
+      There was an error: <pre style={{whiteSpace: 'normal'}}>{error[0]}</pre>
+    </div>
+  )
 }
 
 function PokemonInfo({pokemonName}) {
@@ -100,7 +109,7 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary pokemonName={pokemonName}>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
